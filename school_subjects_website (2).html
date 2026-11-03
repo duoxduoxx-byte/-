@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSpace OS Pro - Ультимативная Образовательная Платформа</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-sidebar: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border: #e2e8f0;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --sidebar-width: 320px;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-sidebar: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        aside {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .sidebar-section h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            padding: 0.625rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+            max-width: 1400px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding-left: 2.5rem;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            padding: 1.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .stat-card h4 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        /* Dynamic Graph Canvas Container */
+        .analytics-container {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .graph-wrapper {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        /* Subjects Grid */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .subject-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-header {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #4f46e510, #6366f120);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: var(--border);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--success);
+            transition: width 0.4s ease;
+        }
+
+        /* Interactive Lab Modules */
+        .lab-box {
+            background-color: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+            text-align: left;
+            border: 1px solid var(--border);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .quiz-option:hover {
+            background-color: var(--bg-primary);
+        }
+
+        .quiz-option.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-color: #34d399;
+        }
+
+        .quiz-option.wrong {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+        }
+
+        /* Modal Layout */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Flashcard Feature */
+        .flashcard-wrapper {
+            perspective: 1000px;
+            width: 100%;
+            height: 120px;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .flashcard-front {
+            background-color: var(--bg-primary);
+        }
+
+        .flashcard-back {
+            background-color: var(--accent);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Note System */
+        .notes-textarea {
+            width: 100%;
+            height: 60px;
+            resize: none;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            aside {
+                display: none;
+            }
+            main {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR PANEL -->
+    <aside>
+        <div class="logo-area">
+            <span>⚡</span> EduSpace OS Pro
+        </div>
+
+        <button class="btn btn-primary" id="theme-toggle">🌓 Сменить тему</button>
+
+        <div class="sidebar-section">
+            <h3>📊 Действия</h3>
+            <button class="btn" id="open-stats">🏆 Достижения и Ранг</button>
+            <button class="btn" id="reset-app">⚙️ Сбросить прогресс</button>
+        </div>
+
+        <div class="sidebar-section">
+            <h3>➕ Создать модуль</h3>
+            <div class="form-group">
+                <label>Название предмета</label>
+                <input type="text" id="new-title" placeholder="например, Астрономия">
+            </div>
+            <div class="form-group">
+                <label>Категория</label>
+                <select id="new-category">
+                    <option value="Точные науки">Точные науки</option>
+                    <option value="Естественные науки">Естественные науки</option>
+                    <option value="Гуманитарные науки">Гуманитарные науки</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <textarea id="new-desc" placeholder="Краткое описание модуля..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Вопрос теста</label>
+                <input type="text" id="new-quest" placeholder="Вопрос">
+            </div>
+            <div class="form-group">
+                <label>Правильный ответ</label>
+                <input type="text" id="new-ans" placeholder="Правильный ответ">
+            </div>
+            <button class="btn btn-primary" id="add-subject-btn">Интегрировать модуль</button>
+        </div>
+    </aside>
+
+    <!-- MAIN INTERFACE -->
+    <main>
+        <header>
+            <div>
+                <h1>Академическая Экосистема</h1>
+                <p style="color: var(--text-secondary)">Управление знаниями, симуляторы и аналитика</p>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Поиск модулей или тем...">
+            </div>
+        </header>
+
+        <!-- STATS DASHBOARD -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p>Всего Дисциплин</p>
+                <h4 id="stat-total">0</h4>
+            </div>
+            <div class="stat-card">
+                <p>Пройдено тестов</p>
+                <h4 id="stat-completed">0</h4>
+            </div>
+            <div class="stat-card">
+                <p>Уровень Опыта (XP)</p>
+                <h4 id="stat-xp">0 XP</h4>
+            </div>
+            <div class="stat-card">
+                <p>Академический статус</p>
+                <h4 id="stat-rank" style="font-size: 1.25rem; margin-top: 0.5rem; color: var(--accent);">Новичок</h4>
+            </div>
+        </div>
+
+        <!-- PROGRESS ANALYTICS GRAPH -->
+        <div class="analytics-container">
+            <h2>📈 Интерактивный График Успеваемости</h2>
+            <p style="color: var(--text-secondary); font-size: 0.875rem;">Динамика набора опыта по мере прохождения тестов</p>
+            <div class="graph-wrapper">
+                <canvas id="analytics-canvas" style="width: 100%; height: 100%;"></canvas>
+            </div>
+        </div>
+
+        <!-- CARDS CONTAINER -->
+        <div class="subjects-grid" id="subjects-container"></div>
+    </main>
+
+    <!-- MODAL POPUP -->
+    <div class="modal" id="stats-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-stats">&times;</button>
+            <h2 style="margin-bottom: 1rem;">🏆 Ваш Академический Паспорт</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem;" id="modal-stats-body">
+                <!-- Вставляется через JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Изначальная база данных предметов
+        const defaultSubjects = [
+            {
+                id: 1,
+                title: "Математика",
+                category: "Точные науки",
+                desc: "Фундаментальная наука о структурах, порядке и отношениях.",
+                quiz: { q: "Чему равен корень из 144?", a: "12", options: ["10", "12", "14", "16"] },
+                type: "math",
+                flashcard: { f: "Теорема Пифагора", b: "a² + b² = c²" }
+            },
+            {
+                id: 2,
+                title: "Физика",
+                category: "Точные науки",
+                desc: "Изучение материи, её движения и фундаментальных взаимодействий.",
+                quiz: { q: "В чём измеряется сила?", a: "Ньютон", options: ["Джоуль", "Ватт", "Ньютон", "Паскаль"] },
+                type: "physics",
+                flashcard: { f: "Первый закон Ньютона", b: "Закон инерции: тело сохраняет покой или движение, пока нет внешних сил." }
+            },
+            {
+                id: 3,
+                title: "Химия",
+                category: "Естественные науки",
+                desc: "Наука о веществах, их свойствах, превращениях и реакциях.",
+                quiz: { q: "Формула поваренной соли?", a: "NaCl", options: ["H2O", "NaCl", "CO2", "HCl"] },
+                type: "chem",
+                flashcard: { f: "Валентность", b: "Способность атома присоединять определённое число других атомов." }
+            },
+            {
+                id: 4,
+                title: "Биология",
+                category: "Естественные науки",
+                desc: "Комплекс наук о живой природе и закономерностях жизни.",
+                quiz: { q: "Какая органелла вырабатывает энергию?", a: "Митохондрия", options: ["Ядро", "Рибосома", "Митохондрия", "Лизосома"] },
+                type: "bio",
+                flashcard: { f: "Фотосинтез", b: "Образование органических веществ из углекислого газа и воды на свету." }
+            }
+        ];
+
+        let state = JSON.parse(localStorage.getItem('eduspace_pro_state')) || {
+            subjects: defaultSubjects,
+            completedQuizzes: [],
+            xp: 0,
+            notes: {},
+            theme: 'light',
+            xpHistory: [0]
+        };
+
+        function saveState() {
+            localStorage.setItem('eduspace_pro_state', JSON.stringify(state));
+            updateDashboard();
+            renderGraph();
+        }
+
+        // Рендеринг кастомного графика на Canvas
+        function renderGraph() {
+            const canvas = document.getElementById('analytics-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            ctx.clearRect(0, 0, rect.width, rect.height);
+
+            const points = state.xpHistory || [0];
+            if (points.length === 1) points.push(points[0]);
+
+            ctx.strokeStyle = state.theme === 'dark' ? '#6366f1' : '#4f46e5';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            const stepX = rect.width / (points.length - 1);
+            const maxVal = Math.max(...points, 100);
+
+            points.forEach((val, index) => {
+                const x = index * stepX;
+                const y = rect.height - (val / maxVal) * (rect.height - 40) - 20;
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+
+            // Точки
+            points.forEach((val, index) => {
+                const x = index * stepX;
+                const y = rect.height - (val / maxVal) * (rect.height - 40) - 20;
+                ctx.fillStyle = '#10b981';
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function getRank(xp) {
+            if (xp >= 300) return "🔥 Академик Экосистемы";
+            if (xp >= 150) return "🧠 Магистр Наук";
+            if (xp >= 50) return "📝 Исследователь";
+            return "🌱 Новичок";
+        }
+
+        function updateDashboard() {
+            document.getElementById('stat-total').innerText = state.subjects.length;
+            document.getElementById('stat-completed').innerText = state.completedQuizzes.length;
+            document.getElementById('stat-xp').innerText = state.xp + " XP";
+            document.getElementById('stat-rank').innerText = getRank(state.xp);
+            document.body.setAttribute('data-theme', state.theme);
+        }
+
+        // Рендеринг карточек
+        function renderCards(filterText = '') {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+
+            const filtered = state.subjects.filter(s => 
+                s.title.toLowerCase().includes(filterText.toLowerCase()) || 
+                s.category.toLowerCase().includes(filterText.toLowerCase())
+            );
+
+            filtered.forEach(subj => {
+                const isDone = state.completedQuizzes.includes(subj.id);
+                const progress = isDone ? 100 : 0;
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+
+                // Рендер уникальных симуляторов/лабораторий в зависимости от типа предмета
+                let labHTML = '';
+                if (subj.type === 'math') {
+                    labHTML = `
+                        <div class="lab-box">
+                            <strong>📐 Геометрическая лаборатория:</strong>
+                            <div style="margin-top:0.5rem; display:flex; gap:0.5rem; align-items:center;">
+                                <input type="number" placeholder="Радиус круга" id="math-r-${subj.id}" style="width:70px; padding:0.25rem;">
+                                <span id="math-res-${subj.id}">S = 0</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (subj.type === 'physics') {
+                    labHTML = `
+                        <div class="lab-box">
+                            <strong>⚡ Симулятор энергии (E = mv²/2):</strong>
+                            <div style="margin-top:0.5rem; display:flex; gap:0.25rem; flex-direction:column;">
+                                <input type="number" placeholder="Масса (кг)" id="phys-m-${subj.id}" style="padding:0.25rem;">
+                                <input type="number" placeholder="Скорость (м/с)" id="phys-v-${subj.id}" style="padding:0.25rem; margin-top:0.25rem;">
+                                <span id="phys-res-${subj.id}" style="margin-top:0.25rem; font-weight:bold;">E_k = 0 Дж</span>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Интерактивные интеракции опций квиза
+                let optionsHTML = '';
+                if (subj.quiz && subj.quiz.options) {
+                    optionsHTML = subj.quiz.options.map(opt => {
+                        return `<button class="quiz-option" data-subj-id="${subj.id}" data-value="${opt}" ${isDone ? 'disabled' : ''}>${opt}</button>`;
+                    }).join('');
+                } else if (subj.quiz) {
+                    // Если кастомный без опций
+                    optionsHTML = `
+                        <div style="display:flex; gap:0.5rem; margin-top:0.5rem;">
+                            <input type="text" id="cust-ans-${subj.id}" placeholder="Ваш ответ" style="flex:1;" ${isDone ? 'disabled' : ''}>
+                            <button class="btn btn-primary cust-quiz-btn" data-subj-id="${subj.id}" ${isDone ? 'disabled' : ''}>Ок</button>
+                        </div>
+                    `;
+                }
+
+                const currentNote = state.notes[subj.id] || '';
+
+                card.innerHTML = `
+                    <div class="card-header">
+                        <span class="card-badge">${subj.category}</span>
+                        <h3 style="margin-top:0.5rem;">${subj.title}</h3>
+                        <div class="progress-container" style="margin-top: 0.75rem;">
+                            <div class="progress-bar" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:0.875rem; color:var(--text-secondary);">${subj.desc}</p>
+                        
+                        <!-- Блок флэш-карт -->
+                        ${subj.flashcard ? `
+                        <div class="flashcard-wrapper" onclick="this.querySelector('.flashcard').classList.toggle('flipped')">
+                            <div class="flashcard">
+                                <div class="flashcard-side flashcard-front">🔍 Кликните, чтобы вспомнить: <br><strong>${subj.flashcard.f}</strong></div>
+                                <div class="flashcard-side flashcard-back">${subj.flashcard.b}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <!-- Лабораторный модуль -->
+                        ${labHTML}
+
+                        <!-- Квиз-модуль -->
+                        <div style="margin-top:0.5rem;">
+                            <strong>❓ Проверка знаний:</strong>
+                            <p style="font-size:0.875rem; margin-top:0.25rem;">${subj.quiz ? subj.quiz.q : 'Нет вопросов.'}</p>
+                            <div class="options-container">${optionsHTML}</div>
+                        </div>
+
+                        <!-- Личные заметки -->
+                        <div style="margin-top:auto; border-top:1px solid var(--border); padding-top:0.75rem;">
+                            <label style="font-size:0.75rem; font-weight:600; text-transform:uppercase; color:var(--text-secondary)">Ваш конспект:</label>
+                            <textarea class="notes-textarea" data-subj-id="${subj.id}" placeholder="Запишите сюда важные формулы или мысли...">${currentNote}</textarea>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+
+                // Слушатели для Лабораторных
+                if (subj.type === 'math') {
+                    const input = card.querySelector(`#math-r-${subj.id}`);
+                    input.addEventListener('input', (e) => {
+                        const r = parseFloat(e.target.value) || 0;
+                        card.querySelector(`#math-res-${subj.id}`).innerText = `S = ${(Math.PI * r * r).toFixed(2)}`;
+                    });
+                } else if (subj.type === 'physics') {
+                    const inputM = card.querySelector(`#phys-m-${subj.id}`);
+                    const inputV = card.querySelector(`#phys-v-${subj.id}`);
+                    const calcPhys = () => {
+                        const m = parseFloat(inputM.value) || 0;
+                        const v = parseFloat(inputV.value) || 0;
+                        card.querySelector(`#phys-res-${subj.id}`).innerText = `E_k = ${(0.5 * m * v * v).toFixed(2)} Дж`;
+                    };
+                    inputM.addEventListener('input', calcPhys);
+                    inputV.addEventListener('input', calcPhys);
+                }
+            });
+
+            // Навешивание кликов на варианты квизов
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const subjId = parseInt(e.target.getAttribute('data-subj-id'));
+                    const val = e.target.getAttribute('data-value');
+                    const subj = state.subjects.find(s => s.id === subjId);
+                    
+                    if (subj.quiz.a === val) {
+                        e.target.classList.add('correct');
+                        state.completedQuizzes.push(subjId);
+                        state.xp += 50;
+                        state.xpHistory.push(state.xp);
+                        saveState();
+                        setTimeout(() => renderCards(filterText), 600);
+                    } else {
+                        e.target.classList.add('wrong');
+                        e.target.disabled = true;
+                    }
+                });
+            });
+
+            // Навешивание кастомного текстового ответа
+            document.querySelectorAll('.cust-quiz-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const subjId = parseInt(e.target.getAttribute('data-subj-id'));
+                    const userAns = document.getElementById(`cust-ans-${subjId}`).value.trim().toLowerCase();
+                    const subj = state.subjects.find(s => s.id === subjId);
+
+                    if (subj.quiz.a.toLowerCase() === userAns) {
+                        state.completedQuizzes.push(subjId);
+                        state.xp += 50;
+                        state.xpHistory.push(state.xp);
+                        saveState();
+                        renderCards(filterText);
+                    } else {
+                        alert('Неверно! Попробуйте еще раз.');
+                    }
+                });
+            });
+
+            // Сохранение заметок
+            document.querySelectorAll('.notes-textarea').forEach(tx => {
+                tx.addEventListener('input', (e) => {
+                    const subjId = e.target.getAttribute('data-subj-id');
+                    state.notes[subjId] = e.target.value;
+                    localStorage.setItem('eduspace_pro_state', JSON.stringify(state));
+                });
+            });
+        }
+
+        // Создание нового модуля через админку
+        document.getElementById('add-subject-btn').addEventListener('click', () => {
+            const title = document.getElementById('new-title').value.trim();
+            const category = document.getElementById('new-category').value;
+            const desc = document.getElementById('new-desc').value.trim();
+            const q = document.getElementById('new-quest').value.trim();
+            const a = document.getElementById('new-ans').value.trim();
+
+            if (!title || !desc) {
+                alert('Пожалуйста, заполните название и описание предмета!');
+                return;
+            }
+
+            const newSubj = {
+                id: Date.now(),
+                title: title,
+                category: category,
+                desc: desc,
+                quiz: q && a ? { q: q, a: a } : null
+            };
+
+            state.subjects.push(newSubj);
+            saveState();
+            renderCards();
+
+            // Сброс формы
+            document.getElementById('new-title').value = '';
+            document.getElementById('new-desc').value = '';
+            document.getElementById('new-quest').value = '';
+            document.getElementById('new-ans').value = '';
+        });
+
+        // Поиск
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            renderCards(e.target.value);
+        });
+
+        // Модальное окно
+        document.getElementById('open-stats').addEventListener('click', () => {
+            const body = document.getElementById('modal-stats-body');
+            body.innerHTML = `
+                <div style="background:var(--bg-primary); padding:1rem; border-radius:0.5rem; border:1px solid var(--border)">
+                    <strong>Ваш текущий ранг:</strong> <span style="color:var(--accent); font-weight:bold;">${getRank(state.xp)}</span>
+                </div>
+                <p>Всего набрано опыта: <strong>${state.xp} XP</strong></p>
+                <p>Завершено учебных модулей: <strong>${state.completedQuizzes.length} из ${state.subjects.length}</strong></p>
+                <p style="font-size:0.875rem; color:var(--text-secondary);">Продолжайте проходить тесты, чтобы открывать новые академические звания и отслеживать свой прогресс на холсте графиков аналитики!</p>
+            `;
+            document.getElementById('stats-modal').classList.add('active');
+        });
+
+        document.getElementById('close-stats').addEventListener('click', () => {
+            document.getElementById('stats-modal').classList.remove('active');
+        });
+
+        // Переключение темы
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            saveState();
+            renderCards(document.getElementById('search-input').value);
+        });
+
+        // Сброс
+        document.getElementById('reset-app').addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите полностью сбросить прогресс и вернуться к исходным предметам?')) {
+                localStorage.removeItem('eduspace_pro_state');
+                state = {
+                    subjects: defaultSubjects,
+                    completedQuizzes: [],
+                    xp: 0,
+                    notes: {},
+                    theme: 'light',
+                    xpHistory: [0]
+                };
+                saveState();
+                renderCards();
+            }
+        });
+
+        // Инициализация
+        window.addEventListener('resize', renderGraph);
+        updateDashboard();
+        renderCards();
+        setTimeout(renderGraph, 200);
+
+    </script>
+</body>
+</html>
